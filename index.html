@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Finknnauer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Staatliches&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+</head>
+<body>
+    <div id="corpo">
+        <h3>Tier List</h3>
+        <div id="lista">
+
+        </div>
+        <div id="images">
+        </div>
+        <div class="enviar_img">
+            <input type="file" id="file" accept="image/*">
+            <button onClick="enviarImage()">Enviar</button>
+        </div>
+    </div>
+</body>
+</html>
+<style>
+    body{
+        background-color: rgba(95, 46, 132, 0.807);
+    }
+    .enviar_img{
+        display: flex;
+        padding: 25px;
+        flex-direction:column;
+    }
+    .enviar_img > button{
+        background-color: green;
+        color: white;
+        border:none;
+        padding: 15px;
+        margin: 5px;
+    }
+    .enviar_img > button:hover{
+        background-color: red;
+        color: white;
+        cursor: pointer;
+    }
+    .edit{
+        font-size: 20px;
+        margin-left: 10px;
+        cursor: pointer;
+    }
+    .edit:hover{
+        color: red;
+    }
+    #corpo{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    h3{
+        font-size: 25px;
+        font-family: 'Staatliches', cursive;
+    }
+    #lista{
+        display: flex;
+        flex-direction: column;
+        border: 3px solid black;
+        background-color: rgb(61, 13, 71);
+        border-radius:5px;
+        min-width: 25rem;
+        padding: 2rem;
+    }
+    li{
+        list-style: none;
+        display: flex;
+        width: 100%;
+        align-items: center;
+        border-top: 0.5px solid gray;
+        border-bottom: 0.5px solid gray;
+    }
+    b{
+        padding: 10px;
+    }
+    #btnRemover{
+        border:none;
+        background-color: gray;
+        display: flex;
+        border-radius: 100px;
+        padding: 2px;
+        margin: 5px;
+    }
+    .titulo{
+        background-color: rebeccapurple;
+        padding: 2rem 2rem;
+        color: white;
+        height: 2rem;
+        width: 10rem;
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        align-items: center;
+    }
+    .conteudo{
+        background-color: rgb(25, 25, 25);
+        padding: 2rem 2rem;
+        color: white;
+        height: 2rem;
+        width: 30rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    #config{
+        background-color: black;
+        padding: 2rem 1rem;
+        height: 2rem;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    #config span{
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+    #config span:hover{
+        color:red;
+    }
+</style>
+<script>
+    function editTitulo(id){
+        const valor = document.getElementById(id).innerHTML; 
+        const input = `<input id="${id}_color" type="color"/><input type="text" value="${valor}" id="${id}_input"/>`
+        document.getElementById(id).innerHTML = input;
+        document.getElementById("editTitle_"+id).style.display = 'none'; 
+        document.getElementById("saveTitle_"+id).style.display = 'block'; 
+    }
+    function saveTitulo(id){
+        const valor = document.getElementById(id+"_input").value;
+
+        document.getElementById(id).innerHTML = valor;
+        document.getElementById("editTitle_"+id).style.display = 'block'; 
+        document.getElementById("saveTitle_"+id).style.display = 'none'; 
+    }
+
+    escreverTabelas(5);
+    function escreverTabelas(qntTabela){
+        const tabela = document.getElementById('lista');
+        for(let i = 0; i < qntTabela; i++){
+            const template = `
+            <li>
+                <div class="titulo" id="titulodiv${i}">
+                    <span id="titulo${i}">Descrição</span>
+                    <div id="editTitle_titulo${i}" onclick="editTitulo('titulo${i}');">
+                        <span class="edit material-symbols-outlined">edit</span>
+                    </div>
+                    <div id="saveTitle_titulo${i}" style="display: none;" onclick="document.getElementById('titulodiv${i}').style.background = document.getElementById('titulo${i}_color').value;saveTitulo('titulo${i}')">
+                        <span class="edit material-symbols-outlined">check</span>
+                    </div>
+                </div>
+                <div id="conteudo${i}" class="conteudo" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+                <div id="config">
+                    <span style="${(i==0)?'display:none':''}" onClick={passarParaCima(${i},${i-1})} class="material-symbols-outlined">expand_less</span>
+                    <span style="${(i==(qntTabela-1))?'display:none':''}"  onClick={passarParaCima(${i},${i+1})} class="material-symbols-outlined">expand_more</span>
+                </div>
+            </li>
+        `;
+            tabela.innerHTML += template;
+
+        }
+    }
+    
+    function passarParaCima(idLinhaRemetente,idLinhaDestino){
+        var conteudoRemetente = document.getElementById('titulo'+idLinhaRemetente).innerHTML;
+        var conteudoDestinatario = document.getElementById('titulo'+idLinhaDestino).innerHTML;
+        document.getElementById('titulo'+idLinhaRemetente).innerHTML = conteudoDestinatario;
+        document.getElementById('titulo'+idLinhaDestino).innerHTML = conteudoRemetente;
+
+
+        var corRemetente = document.getElementById('titulodiv'+idLinhaRemetente).style.background;
+        var corDestinatario = document.getElementById('titulodiv'+idLinhaDestino).style.background;
+        document.getElementById('titulodiv'+idLinhaDestino).style.background = corRemetente;
+        document.getElementById('titulodiv'+idLinhaRemetente).style.background = corDestinatario;
+
+        var conteudoRemetente = document.getElementById('conteudo'+idLinhaRemetente).innerHTML;
+        var conteudoDestinatario = document.getElementById('conteudo'+idLinhaDestino).innerHTML;
+        document.getElementById('conteudo'+idLinhaDestino).innerHTML = conteudoRemetente;
+        document.getElementById('conteudo'+idLinhaRemetente).innerHTML = conteudoDestinatario;
+    }
+
+    var contador = 0;
+    function enviarImage(){
+        const file = document.getElementById('file');
+        if(file.files.length > 0){
+            const images = document.getElementById('images');
+            images.innerHTML += '<img draggable="true" ondragstart="drag(event)" style="width:70px; height:70px;margin:10px;" id="img'+contador+'">'
+            const img = document.getElementById('img'+contador);
+            var reader = new FileReader();
+            reader.onload = () => {
+                img.src = reader.result;
+            }
+            reader.readAsDataURL(file.files[0]);
+            file.value = '';
+            contador++;
+        }
+    }
+
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
+    }
+</script>
